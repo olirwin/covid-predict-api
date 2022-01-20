@@ -52,7 +52,11 @@ class Model(ABC) :
         Saves the model to a local file
         """
 
-        joblib.dump(self.model, filename = self.filename, compress = True)
+        joblib.dump(self.model, filename = f"{self.file_root}.joblib", compress = True)
+
+        update_file_path = Path("updates", f"{self.file_root}.log")
+        with open(update_file_path, "w") as f :
+            f.write(self.last_true_date)
 
     def load(self, filename : Optional[str] = None) -> None :
         """
@@ -66,3 +70,6 @@ class Model(ABC) :
         self.model = joblib.load(filename = filename)
         self.is_fitted = True
 
+        update_file_path = Path("updates", f"{self.file_root}.log")
+        with open(update_file_path, "r") as f :
+            self.last_true_date = f.readline()
