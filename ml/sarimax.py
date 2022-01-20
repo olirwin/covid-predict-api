@@ -17,6 +17,7 @@ class SarimaxModel(Model) :
 
     def __init__(self, region : str) :
         super(SarimaxModel, self).__init__("SARIMAX", region)
+        self.max_iter = int(os.getenv("SARIMAX_FIT_ITER", 50))
 
     def fit(self, input_data: pd.DataFrame) -> None :
         # Create model
@@ -28,7 +29,7 @@ class SarimaxModel(Model) :
             simple_differencing = True
         )
         # Fit model
-        self.model.fit(maxiter = os.getenv("SARIMAX_FIT_ITER"))
+        self.model = self.model.fit(maxiter = self.max_iter)
 
         # Set flag
         self.is_fitted = True
@@ -43,4 +44,4 @@ class SarimaxModel(Model) :
         if not self.is_fitted :
             raise UnfittedModelError("Model has not been fitted")
 
-        return self.model.predict(start, end)
+        return self.model.predict(start = start, end = end)
