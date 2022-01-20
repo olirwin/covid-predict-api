@@ -1,9 +1,11 @@
 from typing import Optional
+from pathlib import Path
 
 import joblib
 import pandas as pd
 
 from abc import ABC, abstractmethod
+
 
 class Model(ABC) :
     """
@@ -13,13 +15,15 @@ class Model(ABC) :
     model_name : str
     region_name : str
     is_fitted : bool
+    file_root : str
+    last_true_date : str
 
     def __init__(self, model_name : str, region_name : str) :
         self.model_name = model_name
         self.region_name = region_name
         self.is_fitted = False
         self.model = None
-        self.filename = f"{self.model_name}_{self.region_name}.joblib"
+        self.file_root = f"{self.model_name}_{self.region_name}"
 
     @abstractmethod
     def fit(self, input_data : pd.DataFrame) -> None :
@@ -57,7 +61,7 @@ class Model(ABC) :
         :param filename: the name of the file if not the default name
         """
 
-        filename = self.filename if filename is None else filename
+        filename = f"{self.file_root}.joblib" if filename is None else filename
 
         self.model = joblib.load(filename = filename)
         self.is_fitted = True

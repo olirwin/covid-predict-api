@@ -5,7 +5,7 @@ from datetime import datetime
 from fastapi import FastAPI, status
 
 from util.exceptions import *
-from util import PredictionBody, ModelLibrary
+from util import PredictionBody, ModelLibrary, DataRequestBody
 from util.data_retrieval import fetch_data, get_nation_data, get_region_data
 from dotenv import load_dotenv
 
@@ -59,7 +59,7 @@ async def predict(body : PredictionBody) :
     model = SarimaxModel(body.region)
 
     # Check if model is in library
-    if (lib_model := MODEL_LIBRARY.get_model(model.filename)) is None :
+    if (lib_model := MODEL_LIBRARY.get_model(model.file_root)) is None :
         model.load()
         MODEL_LIBRARY.add_model(model)
     else :
