@@ -4,7 +4,9 @@ import os
 from datetime import datetime
 from fastapi import FastAPI, status
 
-from util import PredictionBody, fetch_data, get_region_data, ModelLibrary
+from util.exceptions import *
+from util import PredictionBody, ModelLibrary
+from util.data_retrieval import fetch_data, get_nation_data, get_region_data
 from dotenv import load_dotenv
 
 from ml import *
@@ -26,9 +28,16 @@ async def say_hello(name : str) :
     return {"message" : f"Hello {name}"}
 
 
-@app.get("/api/v1/covid/update/", status_code = status.HTTP_200_OK)
+@app.get("/api/v1/covid/update/", status_code = status.HTTP_204_NO_CONTENT)
 async def update() :
-    return {"test ok"}
+    # Update region data
+    overall_data = fetch_data(os.getenv("COV_NAT_DATA_URL"))
+    nation_data  = get_nation_data(overall_data)["P"]
+
+    # Create model
+    model = SarimaxModel("FRA")
+    model.fit(nation_data)
+    model.save()
 
 
 @app.get("/api/v1/covid/update/{region}", status_code = status.HTTP_204_NO_CONTENT)
