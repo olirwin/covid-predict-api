@@ -5,9 +5,6 @@ import pandas as pd
 
 from abc import ABC, abstractmethod
 
-from .exceptions import ModelNotFoundError
-
-
 class Model(ABC) :
     """
     Abstract class to expose model behaviour
@@ -22,6 +19,7 @@ class Model(ABC) :
         self.region_name = region_name
         self.is_fitted = False
         self.model = None
+        self.filename = f"{self.model_name}_{self.region_name}.joblib"
 
     @abstractmethod
     def fit(self, input_data : pd.DataFrame) -> None :
@@ -50,16 +48,17 @@ class Model(ABC) :
         Saves the model to a local file
         """
 
-        joblib.dump(self.model, filename = f"{self.model_name}_{self.region_name}.joblib", compress = True)
+        joblib.dump(self.model, filename = self.filename, compress = True)
 
-    def load(self, filename : Optional[str]) -> None :
+    def load(self, filename : Optional[str] = None) -> None :
         """
         Loads the model contained in the local field.
 
         :param filename: the name of the file if not the default name
         """
 
-        filename = f"{self.model_name}_{self.region_name}.joblib" if filename is None else filename
+        filename = self.filename if filename is None else filename
 
         self.model = joblib.load(filename = filename)
+        self.is_fitted = True
 
