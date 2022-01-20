@@ -6,7 +6,7 @@ from datetime import date, timedelta
 from dotenv import load_dotenv
 from typing import Optional
 
-from .exceptions import InvalidDateError, UnfittedModelError
+from util.exceptions import InvalidDateError, UnfittedModelError
 from .models import Model
 
 
