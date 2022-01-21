@@ -1,7 +1,7 @@
 import json
 import os
 
-from datetime import datetime
+from datetime import datetime, timedelta
 from fastapi import FastAPI, status
 
 from util.exceptions import *
@@ -86,4 +86,59 @@ async def get_library() :
     resp = {"library" : MODEL_LIBRARY.list_model_names()}
 
     return resp
+
+
+@app.post("/api/v1/covid/data", status_code = status.HTTP_200_OK)
+async def get_all_data(body : DataRequestBody) :
+
+    # Get existing (true) data
+
+    end_date = datetime(body.end_date.year, body.end_date.month, body.end_date.day)
+    start_date = datetime(body.start_date.year, body.start_date.month, body.start_date.day)
+
+    if body.region == "FRA" :
+        data = get_nation_data(fetch_data(os.getenv("COV_NAT_DATA_URL")))
+    else :
+        data = get_region_data(fetch_data(os.getenv("COV_REG_DATA_URL")), [body.region])[body.region]
+
+    data = data["P"]
+
+    model = SarimaxModel(body.region)
+
+    # Check if model is in library
+    if (lib_model := MODEL_LIBRARY.get_model(model.file_root)) is None :
+        model.load()
+        MODEL_LIBRARY.add_model(model)
+    else :
+        model = lib_model
+
+    true_end = min(end_date, model.last_true_date)
+
+    existing_data = data.loc[(data.index <= true_end) & (data.index >= start_date)]
+    data_points = [
+        {
+            "date" : index.to_pydatetime().strftime("%Y-%m-%d"),
+            "cases" : int(value),
+            "predicted" : False
+        }
+        for index, value in existing_data.items()
+    ]
+
+    if end_date > true_end :
+        first_prediction = true_end + timedelta(days = 1)
+        predictions = model.predict(start = first_prediction.date(), end = end_date.date())
+
+        data_points += [
+            {
+                "date" : index.to_pydatetime().strftime("%Y-%m-%d"),
+                "cases" : int(value),
+                "predicted" : True
+            }
+            for index, value in predictions.items()
+        ]
+
+    return {"status" : "OK",
+            "body" : {
+                "data" : data_points
+            }}
 
