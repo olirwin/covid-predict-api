@@ -12,3 +12,10 @@ class PredictionBody(BaseModel) :
     start_date : date
     end_date : Optional[date]
     region : Optional[str] = "FRA"
+
+
+class DataRequestBody(BaseModel) :
+
+    start_date : Optional[date]
+    end_date : Optional[date]
+    region : Optional[str] = "FRA"
