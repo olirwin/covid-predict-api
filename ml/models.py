@@ -1,3 +1,4 @@
+from datetime import date, datetime
 from typing import Optional
 from pathlib import Path
 
@@ -16,7 +17,7 @@ class Model(ABC) :
     region_name : str
     is_fitted : bool
     file_root : str
-    last_true_date : str
+    last_true_date : datetime
 
     def __init__(self, model_name : str, region_name : str) :
         self.model_name = model_name
@@ -56,7 +57,7 @@ class Model(ABC) :
 
         update_file_path = Path("updates", f"{self.file_root}.log")
         with open(update_file_path, "w") as f :
-            f.write(self.last_true_date)
+            f.write(self.last_true_date.strftime("%Y-%m-%dT%H:%M:%S"))
 
     def load(self, filename : Optional[str] = None) -> None :
         """
@@ -72,4 +73,6 @@ class Model(ABC) :
 
         update_file_path = Path("updates", f"{self.file_root}.log")
         with open(update_file_path, "r") as f :
-            self.last_true_date = f.readline()
+            read_date = f.readline()
+
+        self.last_true_date = datetime.strptime(read_date, "%Y-%m-%dT%H:%M:%S")

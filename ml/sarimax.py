@@ -35,7 +35,7 @@ class SarimaxModel(Model) :
         self.is_fitted = True
 
         # Update last true date
-        self.last_true_date = input_data.last_valid_index().to_pydatetime().strftime("%Y-%m-%dT%H:%M:%S")
+        self.last_true_date = input_data.last_valid_index().to_pydatetime()
 
     def predict(self, start : date, end : Optional[date]) :
         if end is None :
