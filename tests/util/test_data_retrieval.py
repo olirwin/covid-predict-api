@@ -20,7 +20,7 @@ class DataRetrievalTest(unittest.TestCase) :
             mocked_get.return_value.content = data
 
             df = fetch_data("https://localhost")
-            self.assertEqual((30, 11), df.shape, "Shape should match")
+            self.assertEqual((33, 11), df.shape, "Shape should match")
 
     def test_get_region_data_filters_region(self) :
         region_data = get_region_data(self.region_df, ["01"])
