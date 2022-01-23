@@ -36,7 +36,7 @@ class ModelLibrary :
 
             self.cur_models -= 1
 
-        self.model_library[model.filename] = (datetime.now(), model)
+        self.model_library[model.file_root] = (datetime.now(), model)
         self.cur_models += 1
 
     def get_model(self, model_name : str) -> Optional[Model] :

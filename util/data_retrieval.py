@@ -2,7 +2,7 @@ import io
 import pandas as pd
 import requests
 
-from typing import Dict, Iterable, List
+from typing import Dict, Iterable
 
 
 def fetch_data(url : str) -> pd.DataFrame :
@@ -35,14 +35,13 @@ def get_region_data(data : pd.DataFrame,
     """
 
     to_remove = ["dep", "jour", "cl_age90", "pop"]
-
+    data = data.loc[data["cl_age90"] == 0]
     reg_data = {}
 
     for region in regions :
         tmp : pd.DataFrame = data.loc[data.dep == region]
         tmp.set_index(pd.to_datetime(tmp.jour), inplace = True)
         tmp = tmp.drop(columns = to_remove)
-        tmp = tmp.groupby(level = "jour").sum()
         tmp = tmp.sort_index()
         tmp = tmp.asfreq("D")
 
@@ -51,5 +50,20 @@ def get_region_data(data : pd.DataFrame,
     return reg_data
 
 
+def get_nation_data(data : pd.DataFrame) -> pd.DataFrame :
+    """
+    Returns the formatted data from a general dataset.
 
+    :param data: the general dataset
+    :return: the formatted dataset
+    """
 
+    to_remove = ["P_f", "P_h", "T_f", "T_h", "cl_age90", "pop", "jour", "fra"]
+
+    data = data.loc[data["cl_age90"] == 0]
+    data.set_index(pd.to_datetime(data["jour"]), inplace = True)
+    data = data.drop(columns = to_remove)
+    data = data.sort_index()
+    data = data.asfreq("D")
+
+    return data
