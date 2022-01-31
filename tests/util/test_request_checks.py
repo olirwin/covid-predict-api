@@ -1,7 +1,8 @@
 import unittest
-import pytest
+from datetime import date, timedelta
 
-from util.request_checks import *
+from util.request_checks import check_region, check_all, check_end_date, check_start_date, check_predict_start, \
+    check_dates_order
 
 
 class RequestChecksTest(unittest.TestCase) :

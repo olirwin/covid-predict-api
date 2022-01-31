@@ -1,7 +1,6 @@
 import unittest
 
 import pandas as pd
-import pytest
 
 from unittest.mock import patch
 from util.data_retrieval import fetch_data, get_nation_data, get_region_data
