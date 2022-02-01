@@ -5,7 +5,7 @@ from typing import List
 from dotenv import load_dotenv
 from fastapi import FastAPI, status, HTTPException
 
-from ml import *
+from ml import SarimaxModel
 from util import ModelLibrary, InvalidParameter, check_all
 from util.data_retrieval import fetch_data, get_nation_data, get_region_data
 

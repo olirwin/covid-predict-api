@@ -1,3 +1,5 @@
+[![Total alerts](https://img.shields.io/lgtm/alerts/g/olirwin/covid-predict-api.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/olirwin/covid-predict-api/alerts/)
+[![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/olirwin/covid-predict-api.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/olirwin/covid-predict-api/context:python)
 
 # Table des matières
 
